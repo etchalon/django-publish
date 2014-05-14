@@ -11,27 +11,36 @@
 {% endblock %}
 
 {% block content %}
-{% if perms_lacking %}
-    <p>{% blocktrans %}Your account doesn't have permission to publish the following objects:{% endblocktrans %}</p>
-    <ul>
-    {% for obj in perms_lacking %}
-        <li>{{ obj }}</li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>{% blocktrans %}Are you sure you want to publish the selected {{ object_name }} objects? All of the following objects and their related items will be published:{% endblocktrans %}</p>
-        <ul>{{ all_published|unordered_list }}</ul>
-
-    <form action="" method="post">
-    {% csrf_token %}
-    <div>
-    {% for obj in queryset %}
-    <input type="hidden" name="{{ action_checkbox_name }}" value="{{ obj.pk }}" />
-    {% endfor %}
-    <input type="hidden" name="action" value="publish_selected" />
-    <input type="hidden" name="post" value="yes" />
-    <input type="submit" value="{% trans "Yes, Publish" %}" />
-    </div>
-    </form>
-{% endif %}
+ <div class="g-d-c csv-export-confirmation">
+    {% if perms_lacking %}
+        <p>{% blocktrans %}Your account doesn't have permission to publish the following objects:{% endblocktrans %}</p>
+        <ul>
+        {% for obj in perms_lacking %}
+            <li>{{ obj }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <fieldset class="grp-module">
+            <h2>{% blocktrans %}Are you sure you want to publish the selected {{ object_name }} objects? All of the following objects and their related items will be published:{% endblocktrans %}</h2>
+            <div class="grp-row">
+                <ul>{{ all_published|unordered_list }}</ul>
+            </div>
+        </fieldset>
+        <div class="">
+            <form action="" method="post">
+                {% csrf_token %}
+                <div>
+                    {% for obj in queryset %}
+                        <input type="hidden" name="{{ action_checkbox_name }}" value="{{ obj.pk }}" />
+                    {% endfor %}
+                    <input type="hidden" name="action" value="publish_selected" />
+                    <input type="hidden" name="post" value="yes" />
+                    <ul class="grp-horizontal-list-right grp-submit-row">
+                        <li><input type="submit" value="{% trans "Yes, Publish" %}" /></li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

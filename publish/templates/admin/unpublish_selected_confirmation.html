@@ -22,9 +22,6 @@
     {% else %}
         <fieldset class="grp-module">
             <h2>{% blocktrans %}Are you sure you want to unpublish the selected {{ object_name }} objects? All of the following objects and their related items will be unpublished:{% endblocktrans %}</h2>
-            <div class="grp-row">
-                <ul>{{ all_published|unordered_list }}</ul>
-            </div>
         </fieldset>
         <div class="">
             <form action="" method="post">

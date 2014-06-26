@@ -187,16 +187,18 @@ class Publishable(models.Model):
         self.publish_state = Publishable.PUBLISH_CHANGED
         self.save(mark_changed=False)
         
-    def unpublish(self):   
+    def unpublish(self, dry_run=False, all_published):
         public_version = self.public if not self.is_public else self
         if self.is_public:
             draft_version = self.__class__.get(is_public=True, public=self)
         else:
             draft_version = self
-        draft_version.public = None
-        draft_version.publish_state = Publishable.PUBLISH_CHANGED
-        draft_version.save(mark_changed=False)
-        super(Publishable, public_version).delete()
+        if not dry_run:
+            draft_version.public = None
+            draft_version.publish_state = Publishable.PUBLISH_CHANGED
+            draft_version.save(mark_changed=False)
+            super(Publishable, public_version).delete()
+        return draft_version
 
     def _pre_publish(self, dry_run, all_published, deleted=False):
         if not dry_run:

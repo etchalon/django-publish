@@ -143,26 +143,14 @@ publish_selected.short_description = "Publish selected %(verbose_name_plural)s"
 def unpublish_selected(modeladmin, request, queryset):
     opts = modeladmin.model._meta
     app_label = opts.app_label
-    
-    all_published = NestedSet()
-    for obj in queryset:
-        obj.publish(dry_run=True, all_published=all_published)
 
-    perms_needed = []
-    _check_permissions(modeladmin, all_published, request, perms_needed)
-    
     if request.POST.get('post'):
-        if perms_needed:
-            raise PermissionDenied
-
         n = queryset.count()
         if n:
             for object in all_published:
                 modeladmin.log_publication(request, object)
-
-            queryset.publish()
-            
-            modeladmin.message_user(request, _("Successfully published %(count)d %(items)s.") % {
+            queryset.unpublish()
+            modeladmin.message_user(request, _("Successfully unpublished %(count)d %(items)s.") % {
                 "count": n, "items": model_ngettext(modeladmin.opts, n)
             })
             # Return None to display the change list page again.
@@ -184,9 +172,9 @@ def unpublish_selected(modeladmin, request, queryset):
 
     # Display the confirmation page
     return render_to_response(modeladmin.publish_confirmation_template or [
-        "admin/%s/%s/publish_selected_confirmation.html" % (app_label, opts.object_name.lower()),
-        "admin/%s/publish_selected_confirmation.html" % app_label,
-        "admin/publish_selected_confirmation.html"
+        "admin/%s/%s/unpublish_selected_confirmation.html" % (app_label, opts.object_name.lower()),
+        "admin/%s/unpublish_selected_confirmation.html" % app_label,
+        "admin/unpublish_selected_confirmation.html"
     ], context, context_instance=template.RequestContext(request))
 
 

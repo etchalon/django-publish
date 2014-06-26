@@ -3,7 +3,7 @@ from django.forms.models import BaseInlineFormSet
 from django.utils.encoding import force_unicode 
 
 from .models import Publishable
-from .actions import publish_selected, delete_selected, undelete_selected
+from .actions import publish_selected, delete_selected, undelete_selected, unpublish_selected
 
 from publish.filters import register_filters
 register_filters()

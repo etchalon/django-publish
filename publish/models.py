@@ -44,6 +44,13 @@ class PublishableQuerySet(QuerySet):
             all_published = NestedSet()
         for p in self:
             p.publish(all_published=all_published)
+            
+    def unpublish(self, all_published=None):
+        '''publish all models in this queryset'''
+        if all_published is None:
+            all_published = NestedSet()
+        for p in self:
+            p.unpublish(all_published=all_published)
 
     def delete(self, mark_for_deletion=True):
         '''
@@ -179,6 +186,17 @@ class Publishable(models.Model):
     def undelete(self):
         self.publish_state = Publishable.PUBLISH_CHANGED
         self.save(mark_changed=False)
+        
+    def unpublish(self):   
+        public_version = self.public if not self.is_public else self
+        if self.is_public:
+            draft_version = self.__class__.get(is_public=True, public=self)
+        else:
+            draft_version = self
+        draft_version.public = None
+        draft_version.publish_state = Publishable.PUBLISH_CHANGED
+        draft_version.save(mark_changed=False)
+        super(Publishable, public_version).delete()
 
     def _pre_publish(self, dry_run, all_published, deleted=False):
         if not dry_run:

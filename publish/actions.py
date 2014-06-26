@@ -159,7 +159,6 @@ def unpublish_selected(modeladmin, request, queryset):
     context = {
         "title": _("Publish?"),
         "object_name": force_unicode(opts.verbose_name),
-        "perms_lacking": _to_html(admin_site, perms_needed),
         'queryset': queryset,
         "opts": opts,
         "root_path": _root_path(admin_site),

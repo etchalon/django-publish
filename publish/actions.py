@@ -147,8 +147,6 @@ def unpublish_selected(modeladmin, request, queryset):
     if request.POST.get('post'):
         n = queryset.count()
         if n:
-            for object in all_published:
-                modeladmin.log_publication(request, object)
             queryset.unpublish()
             modeladmin.message_user(request, _("Successfully unpublished %(count)d %(items)s.") % {
                 "count": n, "items": model_ngettext(modeladmin.opts, n)

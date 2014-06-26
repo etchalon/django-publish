@@ -178,5 +178,5 @@ def unpublish_selected(modeladmin, request, queryset):
     ], context, context_instance=template.RequestContext(request))
 
 
-publish_selected.short_description = "Unpublish selected %(verbose_name_plural)s"
+unpublish_selected.short_description = "Unpublish selected %(verbose_name_plural)s"
 
